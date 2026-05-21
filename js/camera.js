@@ -3,6 +3,7 @@ class GameCamera {
     constructor(player, canvas) {
         this.player = player;
         this.canvas = canvas;
+        this.isMobile = navigator.maxTouchPoints > 0 || /Mobi|Android|iPhone|iPad|iPod|Windows Phone/.test(navigator.userAgent);
 
         // Create camera
         const width = canvas.clientWidth;
@@ -22,20 +23,35 @@ class GameCamera {
         this.setupMouseControls();
     }
 
+    rotateYaw(amount) {
+        this.euler.setFromQuaternion(this.camera.quaternion);
+        this.euler.rotateY(amount);
+        this.camera.quaternion.setFromEuler(this.euler);
+    }
+
+    rotatePitch(amount) {
+        this.euler.setFromQuaternion(this.camera.quaternion);
+        this.euler.rotateX(amount);
+        this.euler.x = Math.max(-this.pi2, Math.min(this.pi2, this.euler.x));
+        this.camera.quaternion.setFromEuler(this.euler);
+    }
+
     setupMouseControls() {
-        document.addEventListener('pointerlockchange', () => {
-            this.isLocked = document.pointerLockElement !== null;
-        });
+        if (!this.isMobile) {
+            document.addEventListener('pointerlockchange', () => {
+                this.isLocked = document.pointerLockElement !== null;
+            });
 
-        this.canvas.addEventListener('click', () => {
-            this.canvas.requestPointerLock();
-        });
+            this.canvas.addEventListener('click', () => {
+                this.canvas.requestPointerLock();
+            });
 
-        document.addEventListener('mousemove', (e) => {
-            if (this.isLocked) {
-                this.onMouseMove(e);
-            }
-        });
+            document.addEventListener('mousemove', (e) => {
+                if (this.isLocked) {
+                    this.onMouseMove(e);
+                }
+            });
+        }
     }
 
     onMouseMove(event) {
@@ -75,10 +91,12 @@ class GameCamera {
     }
 
     unlock() {
+        if (this.isMobile) return;
         document.exitPointerLock();
     }
 
     lock() {
+        if (this.isMobile) return;
         this.canvas.requestPointerLock();
     }
 }
