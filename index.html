@@ -40,10 +40,10 @@
 
         <div class="controls-info">
             <div class="control-item">
-                <span class="key">Left Click</span> - Place Block
+                <span class="key">Left Click / P</span> - Place Block
             </div>
             <div class="control-item">
-                <span class="key">Right Click</span> - Remove Block
+                <span class="key">Right Click / O</span> - Remove Block
             </div>
             <div class="control-item">
                 <span class="key">WASD / Arrows</span> - Move
@@ -52,7 +52,10 @@
                 <span class="key">Space</span> - Jump
             </div>
             <div class="control-item">
-                <span class="key">E</span> - Rotate View
+                <span class="key">Q / E</span> - Turn Left / Right
+            </div>
+            <div class="control-item">
+                <span class="key">R / F</span> - Look Up / Down
             </div>
             <div class="control-item">
                 <span class="key">ESC</span> - Menu
@@ -64,10 +67,41 @@
         <div class="crosshair-center"></div>
     </div>
 
+    <div id="mobile-controls" class="mobile-controls">
+        <div class="mobile-dpad">
+            <button type="button" class="mobile-btn" data-action="move-forward">▲</button>
+            <button type="button" class="mobile-btn" data-action="move-left">◄</button>
+            <button type="button" class="mobile-btn" data-action="move-right">►</button>
+            <button type="button" class="mobile-btn" data-action="move-backward">▼</button>
+        </div>
+        <div class="mobile-actions">
+            <button type="button" class="mobile-btn" data-action="place-block">Place</button>
+            <button type="button" class="mobile-btn" data-action="remove-block">Remove</button>
+            <button type="button" class="mobile-btn" data-action="jump">Jump</button>
+        </div>
+        <div class="mobile-actions secondary">
+            <button type="button" class="mobile-btn" data-action="prev-block">Prev</button>
+            <button type="button" class="mobile-btn" data-action="next-block">Next</button>
+            <button type="button" class="mobile-btn" data-action="switch-player">Switch</button>
+        </div>
+    </div>
+
     <div id="main-menu" class="menu active">
         <div class="menu-container">
             <h1>🏠 Build Home Together 🏠</h1>
             <p class="subtitle">A Minecraft-inspired game for Anjana & Reyansh</p>
+            <div class="description">
+                <h3>Ready to Play?</h3>
+                <ul>
+                    <li>1. Click <strong>Start Game</strong></li>
+                    <li>2. Click inside the game area to begin</li>
+                    <li>3. Use <strong>WASD</strong> or arrows to move</li>
+                    <li>4. Left-click to place blocks, right-click to remove</li>
+                    <li>5. On phone: drag on screen to look around</li>
+                    <li>6. On phone: use the Jump button to jump</li>
+                    <li>7. On phone: use Prev / Next to change blocks, Switch to swap players</li>
+                </ul>
+            </div>
             
             <button class="menu-btn" id="start-game-btn">Start Game</button>
             <button class="menu-btn" id="tutorial-btn">How to Play</button>
@@ -84,9 +118,13 @@
                 
                 <h3>🧱 Building</h3>
                 <p>Look at a block and left-click to place a new block in front of it. Select different block types using the block selector at the bottom.</p>
+                <p><strong>Important:</strong> After starting the game, click inside the game area so your mouse can move the camera. If you do not have a mouse, use <strong>Q</strong> and <strong>E</strong> to turn.</p>
                 
                 <h3>💥 Destroying</h3>
-                <p>Look at a block and right-click to remove it.</p>
+                <p>Look at a block and right-click to remove it. If you have no mouse, press <strong>O</strong>. On phone, tap the <strong>Remove</strong> button.</p>
+                
+                <h3>🆙 Jump</h3>
+                <p>Press Space to jump on desktop. On phone, tap the <strong>Jump</strong> button.</p>
                 
                 <h3>👥 Co-op Play</h3>
                 <p>Play with Reyansh! Each player controls their own avatar. Work together to build an amazing home!</p>

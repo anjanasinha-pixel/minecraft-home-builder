@@ -22,7 +22,7 @@ class Game {
         this.camera = new GameCamera(this.currentPlayer, this.canvas);
 
         // Input
-        this.inputManager = new InputManager(this.currentPlayer);
+        this.inputManager = new InputManager(this.currentPlayer, this.camera);
 
         // Game stats
         this.stats = {
@@ -142,13 +142,21 @@ class Game {
                 this.switchPlayer();
             }
         });
+
+        window.addEventListener('switchPlayerTouch', () => {
+            if (this.isRunning && !this.isPaused) {
+                this.switchPlayer();
+            }
+        });
     }
 
     startGame() {
         this.isRunning = true;
         this.inputManager.activateGame();
         this.ui.hideMenu();
-        this.camera.lock();
+        if (!this.camera.isMobile) {
+            this.camera.lock();
+        }
         this.ui.showNotification('🎮 Game Started! Build together!');
     }
 
@@ -161,14 +169,18 @@ class Game {
     resumeGame() {
         this.isPaused = false;
         this.inputManager.activateGame();
-        this.camera.lock();
+        if (!this.camera.isMobile) {
+            this.camera.lock();
+        }
     }
 
     returnToMenu() {
         this.isRunning = false;
         this.isPaused = false;
         this.inputManager.deactivateGame();
-        this.camera.unlock();
+        if (!this.camera.isMobile) {
+            this.camera.unlock();
+        }
         this.ui.showMenu();
         this.inputManager.resetInput();
     }

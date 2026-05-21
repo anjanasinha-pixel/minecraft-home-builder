@@ -97,6 +97,11 @@ class GameUI {
                 this.showNotification(`Selected ${blockMap[e.key]}!`);
             }
         });
+
+        window.addEventListener('selectBlock', (e) => {
+            const selectedType = e.detail.type;
+            blockButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-block') === selectedType));
+        });
     }
 
     hideLoadingScreen() {

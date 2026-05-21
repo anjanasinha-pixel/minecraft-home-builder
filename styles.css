@@ -397,6 +397,82 @@ canvas {
     }
 }
 
+/* Mobile Controls */
+#mobile-controls {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    z-index: 150;
+    pointer-events: none;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 20px;
+    gap: 15px;
+}
+
+#mobile-controls.active {
+    display: flex;
+    pointer-events: auto;
+}
+
+.mobile-dpad,
+.mobile-actions {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(3, 90px);
+}
+
+.mobile-actions.secondary {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(3, 90px);
+    margin-top: 10px;
+}
+
+.mobile-dpad {
+    grid-template-columns: repeat(2, 60px);
+    grid-template-rows: repeat(2, 60px);
+}
+
+.mobile-btn {
+    width: 100%;
+    min-height: 60px;
+    border-radius: 15px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: rgba(76, 175, 80, 0.85);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.mobile-btn:active {
+    transform: scale(0.98);
+}
+
+#gameCanvas {
+    touch-action: none;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+    .controls-info {
+        display: none;
+    }
+
+    .hud {
+        left: 10px;
+        right: 10px;
+    }
+
+    .mobile-controls {
+        display: flex;
+    }
+}
+
 /* Scrollbar Styling */
 .menu-container::-webkit-scrollbar {
     width: 8px;
