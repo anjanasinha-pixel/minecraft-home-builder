@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Home Together - Minecraft Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <p>Building your world...</p>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="hud" class="hud">
+        <div class="player-info">
+            <div class="player" id="player1-info">
+                <div class="player-avatar" id="player1-avatar" style="background-color: #87CEEB;"></div>
+                <div class="player-name">Reyansh</div>
+            </div>
+            <div class="player" id="player2-info">
+                <div class="player-avatar" id="player2-avatar" style="background-color: #FFB6C1;"></div>
+                <div class="player-name">Anjana</div>
+            </div>
+        </div>
+
+        <div class="block-selector">
+            <div class="selector-label">Select Block:</div>
+            <div class="blocks">
+                <button class="block-btn active" data-block="dirt" title="Dirt Block">🟤</button>
+                <button class="block-btn" data-block="grass" title="Grass Block">🟩</button>
+                <button class="block-btn" data-block="wood" title="Wood Block">🟫</button>
+                <button class="block-btn" data-block="stone" title="Stone Block">⬜</button>
+                <button class="block-btn" data-block="sand" title="Sand Block">🟨</button>
+                <button class="block-btn" data-block="brick" title="Brick Block">🧱</button>
+            </div>
+        </div>
+
+        <div class="controls-info">
+            <div class="control-item">
+                <span class="key">Left Click</span> - Place Block
+            </div>
+            <div class="control-item">
+                <span class="key">Right Click</span> - Remove Block
+            </div>
+            <div class="control-item">
+                <span class="key">WASD / Arrows</span> - Move
+            </div>
+            <div class="control-item">
+                <span class="key">Space</span> - Jump
+            </div>
+            <div class="control-item">
+                <span class="key">E</span> - Rotate View
+            </div>
+            <div class="control-item">
+                <span class="key">ESC</span> - Menu
+            </div>
+        </div>
+    </div>
+
+    <div id="crosshair" class="crosshair">
+        <div class="crosshair-center"></div>
+    </div>
+
+    <div id="main-menu" class="menu active">
+        <div class="menu-container">
+            <h1>🏠 Build Home Together 🏠</h1>
+            <p class="subtitle">A Minecraft-inspired game for Anjana & Reyansh</p>
+            
+            <button class="menu-btn" id="start-game-btn">Start Game</button>
+            <button class="menu-btn" id="tutorial-btn">How to Play</button>
+            <button class="menu-btn" id="settings-btn">Settings</button>
+        </div>
+    </div>
+
+    <div id="tutorial-menu" class="menu">
+        <div class="menu-container">
+            <h2>How to Play</h2>
+            <div class="tutorial-content">
+                <h3>🎮 Movement</h3>
+                <p>Use WASD keys or Arrow keys to move around. Press Space to jump!</p>
+                
+                <h3>🧱 Building</h3>
+                <p>Look at a block and left-click to place a new block in front of it. Select different block types using the block selector at the bottom.</p>
+                
+                <h3>💥 Destroying</h3>
+                <p>Look at a block and right-click to remove it.</p>
+                
+                <h3>👥 Co-op Play</h3>
+                <p>Play with Reyansh! Each player controls their own avatar. Work together to build an amazing home!</p>
+                
+                <h3>🎨 Block Types</h3>
+                <ul>
+                    <li>🟤 Dirt - Basic building block</li>
+                    <li>🟩 Grass - Natural terrain</li>
+                    <li>🟫 Wood - Beautiful wooden structures</li>
+                    <li>⬜ Stone - Durable and strong</li>
+                    <li>🟨 Sand - Desert-like material</li>
+                    <li>🧱 Brick - Red brick for nice buildings</li>
+                </ul>
+            </div>
+            <button class="menu-btn" id="back-to-menu-btn">Back to Menu</button>
+        </div>
+    </div>
+
+    <div id="pause-menu" class="menu">
+        <div class="menu-container">
+            <h2>Game Paused</h2>
+            <button class="menu-btn" id="resume-btn">Resume Game</button>
+            <button class="menu-btn" id="save-world-btn">Save World</button>
+            <button class="menu-btn" id="return-to-menu-btn">Return to Menu</button>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Cannon Physics -->
+    <script src="https://cdn.jsdelivr.net/npm/cannon@0.20.0/build/cannon.js"></script>
+
+    <!-- Game Scripts -->
+    <script src="js/constants.js"></script>
+    <script src="js/block.js"></script>
+    <script src="js/world.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/camera.js"></script>
+    <script src="js/input.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

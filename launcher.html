@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Home Together - Launcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .description {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+            text-align: left;
+            border-radius: 5px;
+        }
+
+        .description h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .description p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .description ul {
+            margin-left: 20px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .description li {
+            margin-bottom: 8px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-direction: column;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .features {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .features h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .feature-item {
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            border-left: 3px solid #4CAF50;
+        }
+
+        .feature-item strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .feature-item small {
+            color: #999;
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .emoji {
+            font-size: 24px;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="emoji">🏠</span>Build Home Together<span class="emoji">🏠</span></h1>
+        <p class="subtitle">A Minecraft-inspired Game for Anjana & Reyansh</p>
+
+        <div class="description">
+            <h3>Welcome! 👋</h3>
+            <p>
+                This is a special game designed for you and Reyansh to build amazing homes together!
+                Work cooperatively, place blocks, and create your dream house in a shared virtual world.
+            </p>
+        </div>
+
+        <div class="features">
+            <h4>✨ What You Can Do</h4>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>🧱 Place Blocks</strong>
+                    <small>Build with 6 different block types</small>
+                </div>
+                <div class="feature-item">
+                    <strong>👥 Two Players</strong>
+                    <small>Switch between characters</small>
+                </div>
+                <div class="feature-item">
+                    <strong>💡 Be Creative</strong>
+                    <small>Design anything you imagine</small>
+                </div>
+                <div class="feature-item">
+                    <strong>💾 Auto-Save</strong>
+                    <small>Your world is always saved</small>
+                </div>
+                <div class="feature-item">
+                    <strong>🎮 Easy Controls</strong>
+                    <small>WASD to move, click to build</small>
+                </div>
+                <div class="feature-item">
+                    <strong>🌍 Big World</strong>
+                    <small>Huge area to explore</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <a href="index.html" class="btn btn-primary">▶️ Start Game Now!</a>
+            <a href="QUICK_START.md" class="btn btn-secondary" download>📖 Download Quick Start Guide</a>
+        </div>
+
+        <div class="footer">
+            <p>💚 Made with love for Anjana & Reyansh</p>
+            <p>Have fun building together! | No internet required | 100% safe & free</p>
+        </div>
+    </div>
+</body>
+</html>

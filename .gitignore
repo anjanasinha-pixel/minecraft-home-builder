@@ -1,0 +1,49 @@
+# Node modules (if needed for future development)
+node_modules/
+package-lock.json
+npm-debug.log
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Build files (if you add a build process)
+dist/
+build/
+*.min.js
+*.min.css
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+.AppleDouble
+.LSOverride
+*.class
+.gradle
+.idea
+*.iml
+.recommenders
+
+# Browser cache
+*.cache
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# None of the above - we want to keep everything else!
+!.gitkeep

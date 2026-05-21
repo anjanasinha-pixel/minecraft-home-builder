@@ -1,0 +1,308 @@
+==============================================================================
+                    BUILD HOME TOGETHER - FILE GUIDE
+                        Game Files Explanation
+==============================================================================
+
+📁 MAIN GAME FILES
+──────────────────────────────────────────────────────────────────────────
+
+1. ⭐ launcher.html (START HERE!)
+   - Beautiful welcome screen
+   - Links to the actual game
+   - Instructions and overview
+   - Click "Start Game Now!" to begin
+
+2. 🎮 index.html (THE ACTUAL GAME)
+   - The main game file
+   - This is where you play
+   - Don't edit this file unless you know what you're doing
+
+3. 🎨 styles.css
+   - All the colors and styling
+   - Makes the game look beautiful
+   - Contains menu design, HUD layout, etc.
+
+📁 JAVASCRIPT GAME ENGINE (js/ folder)
+──────────────────────────────────────────────────────────────────────────
+
+These files contain the game logic. In order of importance:
+
+1. ⚙️ game.js
+   - The main game loop that keeps everything running
+   - Handles menus, pause, resume
+   - Manages all game systems
+   - MOST IMPORTANT FILE
+
+2. 🌍 world.js
+   - Creates and manages the game world
+   - Generates terrain
+   - Handles block rendering
+   - Creates lighting and sky
+
+3. 🧱 block.js
+   - Defines what blocks are
+   - Creates block 3D models
+   - Manages block storage
+
+4. 👤 player.js
+   - Creates player characters (Reyansh & Anjana)
+   - Handles player movement
+   - Creates animated avatars
+   - Manages player physics
+
+5. 📷 camera.js
+   - Controls the first-person camera
+   - Handles mouse look (pointer lock)
+   - Moves camera with player
+
+6. ⌨️ input.js
+   - Reads keyboard and mouse input
+   - Handles key presses
+   - Manages block placement/removal clicks
+
+7. 🖼️ ui.js
+   - Manages all menus and UI
+   - Shows notifications
+   - Handles button clicks
+   - Updates player information
+
+8. ⚙️ constants.js
+   - All game settings in one place
+   - Block types, colors, sizes
+   - Player properties
+   - Control speeds and physics
+
+📁 DOCUMENTATION FILES
+──────────────────────────────────────────────────────────────────────────
+
+1. 📖 README.md
+   - Complete game documentation
+   - Features explained
+   - How to play
+   - Troubleshooting guide
+
+2. 🚀 QUICK_START.md
+   - Get started in 5 minutes!
+   - First house building guide
+   - Control cheat sheet
+   - Quick tips
+
+3. 🎨 BUILDING_IDEAS.md
+   - 10+ creative project ideas
+   - Different difficulty levels
+   - Room design tips
+   - Cooperative building advice
+
+4. ✨ FEATURES.md
+   - Detailed technical specifications
+   - All implemented features
+   - System requirements
+   - Roadmap for future
+
+5. 📋 FILES_GUIDE.txt (THIS FILE)
+   - Explains what each file does
+   - Helps you understand the structure
+
+
+==============================================================================
+                         HOW TO USE THE GAME
+==============================================================================
+
+STEP 1: Open launcher.html
+- Double-click launcher.html
+- Or drag it into a web browser
+- A beautiful welcome screen appears
+
+STEP 2: Click "Start Game Now!"
+- The game will load (1-2 seconds)
+- Click in the game area to lock your mouse
+- You're ready to play!
+
+STEP 3: Start Building!
+- Use WASD to move
+- Click to place blocks
+- Right-click to remove blocks
+- Have fun!
+
+
+==============================================================================
+                         CUSTOMIZATION GUIDE
+==============================================================================
+
+Want to customize the game? Here's what you can change:
+
+EASY CUSTOMIZATION (Edit these files directly):
+
+1. In styles.css:
+   - Change colors (search for hex codes like #87CEEB)
+   - Modify font sizes
+   - Adjust button styles
+   - Change menu colors
+
+2. In index.html:
+   - Edit menu text
+   - Change button labels
+   - Modify instructions
+
+3. In js/constants.js:
+   - Change world size (WORLD_SIZE)
+   - Adjust player speed (PLAYER_SPEED)
+   - Modify block types
+   - Change colors and appearance
+
+HARDER CUSTOMIZATION (Need JavaScript knowledge):
+
+- js/block.js: Add new block types
+- js/world.js: Change terrain generation
+- js/player.js: Modify player appearance
+- js/game.js: Change game mechanics
+
+
+==============================================================================
+                      TROUBLESHOOTING CHECKLIST
+==============================================================================
+
+Game won't load?
+✓ Make sure launcher.html or index.html exists
+✓ Try opening in Chrome, Firefox, or Edge
+✓ Check that JavaScript is enabled
+✓ Clear browser cache (Ctrl+Shift+Delete)
+
+Can't move?
+✓ Click in the game area first (focus it)
+✓ Press W to move forward
+✓ Check caps lock isn't on
+
+Can't place blocks?
+✓ Look directly at an existing block
+✓ Make sure you're close enough (within ~10 units)
+✓ Try left-clicking
+
+Game is slow/laggy?
+✓ Close other browser tabs
+✓ Close other programs
+✓ Try reducing window size
+✓ Use a different computer
+
+Saved world disappeared?
+✓ Check if browser cleared cache
+✓ Try opening the game again
+✓ World data is stored in browser's local storage
+
+Commands not working?
+✓ Check if game is paused (press ESC)
+✓ Click in game area to focus it
+✓ Try different keyboard layout
+
+
+==============================================================================
+                         KEYBOARD SHORTCUTS
+==============================================================================
+
+MOVEMENT:
+W/↑ - Move Forward
+A/← - Move Left
+S/↓ - Move Backward
+D/→ - Move Right
+Space - Jump
+
+BLOCKS:
+Left Click - Place Block
+Right Click - Remove Block
+1 - Dirt
+2 - Grass
+3 - Wood
+4 - Stone
+5 - Sand
+6 - Brick
+
+GAME:
+Tab - Switch Player (Reyansh ↔ Anjana)
+ESC - Pause/Resume
+E - (Reserved for future features)
+
+
+==============================================================================
+                          FILE LOCATIONS
+==============================================================================
+
+Game Folder: c:\Users\Anjana\Minecraft Anjana and Reyansh\
+
+Main Files:
+├── launcher.html ← START HERE
+├── index.html (the game)
+├── styles.css
+├── README.md
+├── QUICK_START.md
+├── BUILDING_IDEAS.md
+├── FEATURES.md
+├── FILES_GUIDE.txt (this file)
+└── js/
+    ├── game.js
+    ├── world.js
+    ├── block.js
+    ├── player.js
+    ├── camera.js
+    ├── input.js
+    ├── ui.js
+    └── constants.js
+
+
+==============================================================================
+                           QUICK REFERENCE
+==============================================================================
+
+To Play:
+1. Open launcher.html in browser
+2. Click "Start Game Now!"
+3. Click game area to lock mouse
+4. Use WASD to move, click to place blocks!
+
+To Save:
+- Auto-saves every time you play
+- Or press ESC then "Save World"
+
+To Load Saved World:
+- Just open launcher.html again
+- Your world will be there!
+
+To Customize:
+- Edit constants.js for settings
+- Edit styles.css for colors
+- Edit index.html for text
+
+To Get Help:
+- Read README.md for full documentation
+- Read QUICK_START.md for quick help
+- Read BUILDING_IDEAS.md for inspiration
+
+To Improve Performance:
+- Close other browser tabs
+- Reduce window size
+- Try a different browser
+- Use a computer with better GPU
+
+
+==============================================================================
+                      IMPORTANT REMINDERS
+==============================================================================
+
+✓ This game runs entirely in your browser - no installation needed!
+✓ No internet required after initial load
+✓ Your world is saved in browser storage automatically
+✓ 100% safe - no tracking or data collection
+✓ Works on any device with a modern browser
+✓ Supports Chrome, Firefox, Edge, Safari
+✓ Can be played offline after loading once
+
+TIPS:
+- Make regular manual saves to be safe
+- Clear cache rarely - it deletes saved worlds
+- Share your creations with screenshots
+- Have fun building with Reyansh!
+
+==============================================================================
+                         CREATED WITH ❤️
+                       For Anjana & Reyansh
+                          May 21, 2026
+==============================================================================
