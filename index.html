@@ -105,7 +105,21 @@
             
             <button class="menu-btn" id="start-game-btn">Start Game</button>
             <button class="menu-btn" id="tutorial-btn">How to Play</button>
+            <button class="menu-btn" id="vocabulary-btn">Increase Vocabulary</button>
             <button class="menu-btn" id="settings-btn">Settings</button>
+        </div>
+    </div>
+
+    <div id="vocabulary-menu" class="menu">
+        <div class="menu-container">
+            <h2>Increase Your Vocabulary</h2>
+            <div class="vocabulary-card">
+                <h3 id="vocab-word">Word</h3>
+                <p id="vocab-meaning">Meaning will appear here.</p>
+                <p id="vocab-usage">Usage will appear here.</p>
+            </div>
+            <button class="menu-btn" id="vocab-next-btn">Show New Word</button>
+            <button class="menu-btn" id="vocab-back-btn">Back to Menu</button>
         </div>
     </div>
 
@@ -150,6 +164,32 @@
             <button class="menu-btn" id="resume-btn">Resume Game</button>
             <button class="menu-btn" id="save-world-btn">Save World</button>
             <button class="menu-btn" id="return-to-menu-btn">Return to Menu</button>
+        </div>
+    </div>
+
+    <div id="settings-menu" class="menu">
+        <div class="menu-container">
+            <h2>Game Settings</h2>
+            <div class="tutorial-content">
+                <label for="settings-name">Your Name</label>
+                <input id="settings-name" class="settings-input" type="text" placeholder="Enter your name...">
+                <button class="menu-btn" id="settings-save-btn">Save Name</button>
+
+                <div class="settings-location">
+                    <p id="settings-location-text">Location: not set</p>
+                    <button class="menu-btn" id="settings-location-btn">Get Access Location</button>
+                </div>
+
+                <div class="settings-tracking">
+                    <p id="settings-last-access">Last access: unknown</p>
+                    <p id="settings-access-user">Last user: unknown</p>
+                </div>
+                <div class="usage-log">
+                    <h3>Usage Log</h3>
+                    <div id="usage-log-list" class="usage-log-list"></div>
+                </div>
+            </div>
+            <button class="menu-btn" id="settings-back-btn">Back to Menu</button>
         </div>
     </div>
 

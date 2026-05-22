@@ -4,12 +4,103 @@ class GameUI {
         this.mainMenu = document.getElementById('main-menu');
         this.tutorialMenu = document.getElementById('tutorial-menu');
         this.pauseMenu = document.getElementById('pause-menu');
+        this.settingsMenu = document.getElementById('settings-menu');
         this.loadingScreen = document.getElementById('loading-screen');
         this.notification = document.getElementById('notification');
         this.hud = document.getElementById('hud');
+        this.settingsNameInput = document.getElementById('settings-name');
+        this.settingsLocationText = document.getElementById('settings-location-text');
+        this.settingsLastAccess = document.getElementById('settings-last-access');
+        this.settingsAccessUser = document.getElementById('settings-access-user');
+        this.settingsLogList = document.getElementById('usage-log-list');
+        this.vocabMenu = document.getElementById('vocabulary-menu');
+        this.vocabWordElem = document.getElementById('vocab-word');
+        this.vocabMeaningElem = document.getElementById('vocab-meaning');
+        this.vocabUsageElem = document.getElementById('vocab-usage');
+
+        this.currentUser = localStorage.getItem('gameUserName') || 'Guest';
+        this.currentLocation = localStorage.getItem('gameUserLocation') || 'Unknown';
+        this.usageLog = this.loadUsageLog();
 
         this.setupMenuButtons();
         this.setupBlockSelector();
+        this.setupUsageLogging();
+        this.renderSettings();
+
+        this.trackUsage('App Opened', { location: this.currentLocation });
+    }
+
+    getVocabularyList() {
+        return [
+            {
+                word: 'Serendipity',
+                meaning: 'The occurrence of events by chance in a happy or beneficial way.',
+                usage: 'Finding the perfect shell on the beach was pure serendipity.'
+            },
+            {
+                word: 'Eloquent',
+                meaning: 'Fluent or persuasive in speaking or writing.',
+                usage: 'Her eloquent speech moved the entire audience.'
+            },
+            {
+                word: 'Resilient',
+                meaning: 'Able to withstand or recover quickly from difficult conditions.',
+                usage: 'The resilient plants survived the harsh winter.'
+            },
+            {
+                word: 'Intricate',
+                meaning: 'Very complicated or detailed.',
+                usage: 'The artist created an intricate pattern on the vase.'
+            },
+            {
+                word: 'Vivid',
+                meaning: 'Producing powerful feelings or strong, clear images in the mind.',
+                usage: 'He described the memory in vivid detail.'
+            },
+            {
+                word: 'Astonish',
+                meaning: 'To surprise or impress someone greatly.',
+                usage: 'The magician’s final trick never failed to astonish the crowd.'
+            },
+            {
+                word: 'Curious',
+                meaning: 'Eager to know or learn something.',
+                usage: 'The curious child asked many questions about the stars.'
+            },
+            {
+                word: 'Brilliant',
+                meaning: 'Exceptionally clever or talented.',
+                usage: 'She had a brilliant idea for solving the problem.'
+            },
+            {
+                word: 'Harmony',
+                meaning: 'The combination of simultaneously sounded musical notes to produce a pleasing effect.',
+                usage: 'The choir sang in perfect harmony.'
+            },
+            {
+                word: 'Enchanting',
+                meaning: 'Delightfully charming or attractive.',
+                usage: 'The garden looked enchanting at sunset.'
+            }
+        ];
+    }
+
+    showVocabulary() {
+        this.hideAllMenus();
+        if (this.vocabMenu) {
+            this.vocabMenu.classList.add('active');
+            this.nextVocabularyWord();
+        }
+    }
+
+    nextVocabularyWord() {
+        const vocabList = this.getVocabularyList();
+        const index = Math.floor(Math.random() * vocabList.length);
+        const vocab = vocabList[index];
+        if (this.vocabWordElem) this.vocabWordElem.textContent = vocab.word;
+        if (this.vocabMeaningElem) this.vocabMeaningElem.textContent = `Meaning: ${vocab.meaning}`;
+        if (this.vocabUsageElem) this.vocabUsageElem.textContent = `Usage: ${vocab.usage}`;
+        this.trackUsage('Vocabulary Viewed', { word: vocab.word });
     }
 
     setupMenuButtons() {
@@ -25,7 +116,31 @@ class GameUI {
 
         // Settings
         document.getElementById('settings-btn').addEventListener('click', () => {
-            this.showNotification('Settings coming soon!');
+            this.showSettings();
+        });
+
+        // Settings Save
+        document.getElementById('settings-save-btn').addEventListener('click', () => {
+            this.saveSettings();
+        });
+
+        document.getElementById('settings-location-btn').addEventListener('click', () => {
+            this.requestLocation();
+        });
+
+        document.getElementById('settings-back-btn').addEventListener('click', () => {
+            this.showMenu();
+        });
+
+        // Vocabulary
+        document.getElementById('vocabulary-btn').addEventListener('click', () => {
+            this.showVocabulary();
+        });
+        document.getElementById('vocab-next-btn').addEventListener('click', () => {
+            this.nextVocabularyWord();
+        });
+        document.getElementById('vocab-back-btn').addEventListener('click', () => {
+            this.showMenu();
         });
 
         // Tutorial Back
@@ -113,17 +228,32 @@ class GameUI {
         this.mainMenu.classList.add('active');
         this.pauseMenu.classList.remove('active');
         this.tutorialMenu.classList.remove('active');
+        this.settingsMenu.classList.remove('active');
     }
 
     hideMenu() {
         this.mainMenu.classList.remove('active');
         this.pauseMenu.classList.remove('active');
         this.tutorialMenu.classList.remove('active');
+        this.settingsMenu.classList.remove('active');
     }
 
     showTutorial() {
-        this.mainMenu.classList.remove('active');
+        this.hideAllMenus();
         this.tutorialMenu.classList.add('active');
+    }
+
+    showSettings() {
+        this.hideAllMenus();
+        this.settingsMenu.classList.add('active');
+        this.renderSettings();
+    }
+
+    hideAllMenus() {
+        this.mainMenu.classList.remove('active');
+        this.pauseMenu.classList.remove('active');
+        this.tutorialMenu.classList.remove('active');
+        this.settingsMenu.classList.remove('active');
     }
 
     pauseGame() {
@@ -167,6 +297,96 @@ class GameUI {
 
     updateStats(stats) {
         // Can be extended to show world stats
+    }
+
+    saveSettings() {
+        const name = this.settingsNameInput.value.trim() || 'Guest';
+        this.currentUser = name;
+        localStorage.setItem('gameUserName', name);
+        this.showNotification(`Saved name: ${name}`);
+        this.trackUsage('Settings Updated', { user: name, location: this.currentLocation });
+        this.renderSettings();
+    }
+
+    requestLocation() {
+        if (!navigator.geolocation) {
+            this.showNotification('Geolocation is not supported by your browser.');
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition((position) => {
+            const locText = `Lat ${position.coords.latitude.toFixed(4)}, Lon ${position.coords.longitude.toFixed(4)}`;
+            this.currentLocation = locText;
+            localStorage.setItem('gameUserLocation', locText);
+            this.showNotification('Location saved.');
+            this.trackUsage('Location Retrieved', { user: this.currentUser, location: locText });
+            this.renderSettings();
+        }, (error) => {
+            this.showNotification(`Location error: ${error.message}`);
+        });
+    }
+
+    loadUsageLog() {
+        try {
+            const raw = localStorage.getItem('gameUsageLog');
+            return raw ? JSON.parse(raw) : [];
+        } catch (err) {
+            return [];
+        }
+    }
+
+    saveUsageLog() {
+        localStorage.setItem('gameUsageLog', JSON.stringify(this.usageLog.slice(-50)));
+    }
+
+    trackUsage(eventType, details = {}) {
+        const entry = {
+            timestamp: new Date().toISOString(),
+            event: eventType,
+            user: this.currentUser,
+            location: this.currentLocation,
+            details
+        };
+        this.usageLog.push(entry);
+        this.saveUsageLog();
+        this.renderSettings();
+    }
+
+    setupUsageLogging() {
+        window.addEventListener('startGame', () => this.trackUsage('Game Started'));
+        window.addEventListener('placeBlock', () => this.trackUsage('Block Placed'));
+        window.addEventListener('removeBlock', () => this.trackUsage('Block Removed'));
+        window.addEventListener('saveWorld', () => this.trackUsage('World Saved'));
+        window.addEventListener('switchPlayerTouch', () => this.trackUsage('Player Switched'));
+    }
+
+    formatTimestamp(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleString();
+    }
+
+    renderSettings() {
+        this.settingsNameInput.value = this.currentUser;
+        this.settingsLocationText.textContent = `Location: ${this.currentLocation}`;
+
+        const lastEntry = this.usageLog[this.usageLog.length - 1];
+        this.settingsLastAccess.textContent = lastEntry ? `Last access: ${this.formatTimestamp(lastEntry.timestamp)}` : 'Last access: unknown';
+        this.settingsAccessUser.textContent = lastEntry ? `Last user: ${lastEntry.user}` : 'Last user: unknown';
+
+        if (this.settingsLogList) {
+            this.settingsLogList.innerHTML = '';
+            const recent = this.usageLog.slice(-10).reverse();
+            if (recent.length === 0) {
+                this.settingsLogList.innerHTML = '<p>No usage records yet.</p>';
+            } else {
+                recent.forEach(entry => {
+                    const item = document.createElement('div');
+                    item.className = 'usage-log-entry';
+                    item.innerHTML = `<strong>${this.formatTimestamp(entry.timestamp)}</strong><br>${entry.event} by <strong>${entry.user}</strong> at <em>${entry.location}</em>`;
+                    this.settingsLogList.appendChild(item);
+                });
+            }
+        }
     }
 
     toggleHUD(show) {

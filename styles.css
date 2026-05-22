@@ -254,11 +254,57 @@ canvas {
     color: #FFD700;
 }
 
-.subtitle {
-    font-size: 18px;
-    color: #87CEEB;
-    margin-bottom: 30px;
-}
+    .settings-input {
+        width: 100%;
+        padding: 12px 14px;
+        margin: 10px 0 15px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 16px;
+    }
+
+    .settings-location,
+    .settings-tracking,
+    .usage-log,
+    .vocabulary-card {
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        padding: 15px;
+        margin: 15px 0;
+    }
+
+    .usage-log-list {
+        max-height: 220px;
+        overflow-y: auto;
+    }
+
+    .vocabulary-card h3 {
+        font-size: 28px;
+        margin-bottom: 12px;
+        color: #ffd700;
+    }
+
+    .vocabulary-card p {
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+
+    .usage-log-entry {
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        color: #e0e0e0;
+        font-size: 14px;
+    }
+
+    .usage-log-entry:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
 
 .menu-btn {
     display: block;
