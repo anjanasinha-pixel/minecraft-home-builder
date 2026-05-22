@@ -21,6 +21,8 @@ class GameUI {
         this.currentUser = localStorage.getItem('gameUserName') || 'Guest';
         this.currentLocation = localStorage.getItem('gameUserLocation') || 'Unknown';
         this.usageLog = this.loadUsageLog();
+        this.vocabList = this.getVocabularyList();
+        this.vocabQueue = this.shuffleVocabulary(this.vocabList);
 
         this.setupMenuButtons();
         this.setupBlockSelector();
@@ -81,8 +83,192 @@ class GameUI {
                 word: 'Enchanting',
                 meaning: 'Delightfully charming or attractive.',
                 usage: 'The garden looked enchanting at sunset.'
+            },
+            {
+                word: 'Affable',
+                meaning: 'Friendly, easy to talk to, and pleasant.',
+                usage: 'The affable neighbor always welcomed visitors with a smile.'
+            },
+            {
+                word: 'Altruistic',
+                meaning: 'Unselfishly concerned with the welfare of others.',
+                usage: 'Her altruistic actions helped the whole community.'
+            },
+            {
+                word: 'Benevolent',
+                meaning: 'Well meaning and kindly.',
+                usage: 'The benevolent leader guided the team with compassion.'
+            },
+            {
+                word: 'Buoyant',
+                meaning: 'Cheerful and optimistic.',
+                usage: 'Her buoyant spirit lifted everyone in the room.'
+            },
+            {
+                word: 'Courageous',
+                meaning: 'Brave and willing to face danger or difficulty.',
+                usage: 'The courageous boy rescued the kitten from the tree.'
+            },
+            {
+                word: 'Dauntless',
+                meaning: 'Showing fearlessness and determination.',
+                usage: 'She remained dauntless during the storm.'
+            },
+            {
+                word: 'Debonair',
+                meaning: 'Confident, stylish and charming.',
+                usage: 'He looked debonair in his sharp suit.'
+            },
+            {
+                word: 'Diligent',
+                meaning: 'Showing care and effort in one’s work or duties.',
+                usage: 'The diligent student finished every assignment on time.'
+            },
+            {
+                word: 'Ebullient',
+                meaning: 'Overflowing with enthusiasm or excitement.',
+                usage: 'Her ebullient laughter filled the café.'
+            },
+            {
+                word: 'Effervescent',
+                meaning: 'Vivacious and full of energy.',
+                usage: 'He had an effervescent personality that everyone enjoyed.'
+            },
+            {
+                word: 'Empathetic',
+                meaning: 'Able to understand and share the feelings of others.',
+                usage: 'Her empathetic nature made her a great friend.'
+            },
+            {
+                word: 'Flourish',
+                meaning: 'To grow or develop in a healthy or vigorous way.',
+                usage: 'The garden began to flourish after the spring rain.'
+            },
+            {
+                word: 'Fortunate',
+                meaning: 'Having good luck or favorable circumstances.',
+                usage: 'They felt fortunate to find shelter before the storm.'
+            },
+            {
+                word: 'Gallant',
+                meaning: 'Brave and noble in spirit.',
+                usage: 'The gallant defender protected the weak.'
+            },
+            {
+                word: 'Gracious',
+                meaning: 'Courteous, kind, and pleasant.',
+                usage: 'She remained gracious even after the competition ended.'
+            },
+            {
+                word: 'Halcyon',
+                meaning: 'Calm, peaceful, and happy.',
+                usage: 'They remembered the halcyon days of summer with fondness.'
+            },
+            {
+                word: 'Impeccable',
+                meaning: 'In accordance with the highest standards; faultless.',
+                usage: 'His service at the restaurant was impeccable.'
+            },
+            {
+                word: 'Inspiring',
+                meaning: 'Having the effect of inspiring someone to do or feel something.',
+                usage: 'Her speech was inspiring and moved everyone to action.'
+            },
+            {
+                word: 'Jubilant',
+                meaning: 'Feeling or expressing great happiness and triumph.',
+                usage: 'The team was jubilant after winning the championship.'
+            },
+            {
+                word: 'Keen',
+                meaning: 'Having or showing eagerness or enthusiasm.',
+                usage: 'He was keen to learn new things every day.'
+            },
+            {
+                word: 'Luminous',
+                meaning: 'Giving off light; bright or shining.',
+                usage: 'The luminous moon lit the night sky.'
+            },
+            {
+                word: 'Magnanimous',
+                meaning: 'Very generous or forgiving, especially toward a rival or someone less powerful.',
+                usage: 'She was magnanimous in victory and praised her opponent.'
+            },
+            {
+                word: 'Mellifluous',
+                meaning: 'Sweet or musical; pleasant to hear.',
+                usage: 'The singer’s mellifluous voice calmed the audience.'
+            },
+            {
+                word: 'Optimistic',
+                meaning: 'Hopeful and confident about the future.',
+                usage: 'He remained optimistic even when the task was hard.'
+            },
+            {
+                word: 'Passionate',
+                meaning: 'Showing strong feelings or belief.',
+                usage: 'She was passionate about protecting the environment.'
+            },
+            {
+                word: 'Radiant',
+                meaning: 'Clearly very happy and full of love or joy.',
+                usage: 'Her radiant smile brightened the room.'
+            },
+            {
+                word: 'Serene',
+                meaning: 'Calm, peaceful, and untroubled.',
+                usage: 'The lake was serene at dawn.'
+            },
+            {
+                word: 'Spirited',
+                meaning: 'Full of energy, enthusiasm, and determination.',
+                usage: 'The team gave a spirited performance in the final game.'
+            },
+            {
+                word: 'Stellar',
+                meaning: 'Outstanding; exceptionally good.',
+                usage: 'Her presentation was absolutely stellar.'
+            },
+            {
+                word: 'Tenacious',
+                meaning: 'Holding fast; persistent and determined.',
+                usage: 'She was tenacious in pursuing her dreams.'
+            },
+            {
+                word: 'Tranquil',
+                meaning: 'Free from disturbance; calm.',
+                usage: 'The tranquil garden was a perfect place to read.'
+            },
+            {
+                word: 'Uplifting',
+                meaning: 'Morally or spiritually elevating; inspiring happiness or hope.',
+                usage: 'The story was uplifting and renewed their faith in kindness.'
+            },
+            {
+                word: 'Vibrant',
+                meaning: 'Full of energy and enthusiasm.',
+                usage: 'The festival atmosphere was vibrant and joyful.'
+            },
+            {
+                word: 'Winsome',
+                meaning: 'Attractive or appealing in a fresh, innocent way.',
+                usage: 'Her winsome smile made everyone feel welcome.'
+            },
+            {
+                word: 'Zealous',
+                meaning: 'Filled with or showing a strong and energetic desire to do something.',
+                usage: 'The zealous volunteers worked hard to help the community.'
             }
         ];
+    }
+
+    shuffleVocabulary(list) {
+        const shuffled = list.slice();
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
     }
 
     showVocabulary() {
@@ -94,9 +280,12 @@ class GameUI {
     }
 
     nextVocabularyWord() {
-        const vocabList = this.getVocabularyList();
-        const index = Math.floor(Math.random() * vocabList.length);
-        const vocab = vocabList[index];
+        if (!this.vocabQueue || this.vocabQueue.length === 0) {
+            this.vocabQueue = this.shuffleVocabulary(this.vocabList);
+        }
+
+        const vocab = this.vocabQueue.shift();
+        if (!vocab) return;
         if (this.vocabWordElem) this.vocabWordElem.textContent = vocab.word;
         if (this.vocabMeaningElem) this.vocabMeaningElem.textContent = `Meaning: ${vocab.meaning}`;
         if (this.vocabUsageElem) this.vocabUsageElem.textContent = `Usage: ${vocab.usage}`;
