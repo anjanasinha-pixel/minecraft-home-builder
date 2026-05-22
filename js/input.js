@@ -6,8 +6,12 @@ class InputManager {
         this.keys = {};
         this.isGameActive = false;
         this.touchDrag = false;
+        this.touchMoved = false;
         this.lastTouchX = 0;
         this.lastTouchY = 0;
+        this.touchStartX = 0;
+        this.touchStartY = 0;
+        this.touchStartTime = 0;
 
         this.setupKeyboardControls();
         this.setupTouchControls();
@@ -17,20 +21,21 @@ class InputManager {
         document.addEventListener('keydown', (e) => {
             this.keys[e.code] = true;
 
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyQ', 'KeyE', 'KeyR', 'KeyF', 'Space', 'KeyP', 'KeyO'].includes(e.code)) {
+                e.preventDefault();
+            }
+
             if (!this.isGameActive) return;
 
             switch (e.code) {
                 case 'Space':
                     this.player.jump();
-                    e.preventDefault();
                     break;
                 case 'KeyP':
                     window.dispatchEvent(new CustomEvent('placeBlock'));
-                    e.preventDefault();
                     break;
                 case 'KeyO':
                     window.dispatchEvent(new CustomEvent('removeBlock'));
-                    e.preventDefault();
                     break;
             }
         });
@@ -68,8 +73,12 @@ class InputManager {
                 if (!this.isGameActive) return;
                 const touch = e.touches[0];
                 this.touchDrag = true;
+                this.touchMoved = false;
                 this.lastTouchX = touch.clientX;
                 this.lastTouchY = touch.clientY;
+                this.touchStartX = touch.clientX;
+                this.touchStartY = touch.clientY;
+                this.touchStartTime = performance.now();
                 e.preventDefault();
             }, { passive: false });
 
@@ -78,6 +87,10 @@ class InputManager {
                 const touch = e.touches[0];
                 const deltaX = touch.clientX - this.lastTouchX;
                 const deltaY = touch.clientY - this.lastTouchY;
+                const moveDistance = Math.hypot(touch.clientX - this.touchStartX, touch.clientY - this.touchStartY);
+                if (moveDistance > 10) {
+                    this.touchMoved = true;
+                }
                 this.camera.rotateYaw(-deltaX * 0.003);
                 this.camera.rotatePitch(-deltaY * 0.003);
                 this.lastTouchX = touch.clientX;
@@ -85,15 +98,21 @@ class InputManager {
                 e.preventDefault();
             }, { passive: false });
 
-            canvas.addEventListener('touchend', () => {
+            canvas.addEventListener('touchend', (e) => {
+                if (!this.isGameActive) return;
+                const touchDuration = performance.now() - this.touchStartTime;
+                if (!this.touchMoved && touchDuration < 300) {
+                    window.dispatchEvent(new CustomEvent('placeBlock'));
+                }
                 this.touchDrag = false;
-            });
+                e.preventDefault();
+            }, { passive: false });
         }
 
         const buttons = document.querySelectorAll('.mobile-btn');
         buttons.forEach((button) => {
             const action = button.getAttribute('data-action');
-            button.addEventListener('touchstart', (e) => {
+            const handleActionStart = (e) => {
                 if (!this.isGameActive) return;
                 switch (action) {
                     case 'move-forward':
@@ -128,7 +147,10 @@ class InputManager {
                         break;
                 }
                 e.preventDefault();
-            }, { passive: false });
+            };
+
+            button.addEventListener('touchstart', handleActionStart, { passive: false });
+            button.addEventListener('mousedown', handleActionStart);
 
             button.addEventListener('touchend', () => {
                 switch (action) {

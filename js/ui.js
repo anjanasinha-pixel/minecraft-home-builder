@@ -61,16 +61,17 @@ class GameUI {
     setupBlockSelector() {
         const blockButtons = document.querySelectorAll('.block-btn');
         blockButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Remove active class from all buttons
+            const selectBlock = (e) => {
+                e.preventDefault();
                 blockButtons.forEach(b => b.classList.remove('active'));
-                // Add active class to clicked button
                 btn.classList.add('active');
-                // Dispatch event
                 const blockType = btn.getAttribute('data-block');
                 window.dispatchEvent(new CustomEvent('selectBlock', { detail: { type: blockType } }));
                 this.showNotification(`Selected ${blockType}!`);
-            });
+            };
+
+            btn.addEventListener('click', selectBlock);
+            btn.addEventListener('touchstart', selectBlock, { passive: false });
         });
 
         // Keyboard shortcuts for blocks

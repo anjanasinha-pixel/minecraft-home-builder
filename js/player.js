@@ -253,6 +253,16 @@ class Player {
             
             world.addBlock(x, y, z, this.selectedBlockType);
             this.showNotification(`Placed ${this.selectedBlockType} block!`);
+        } else {
+            // Fallback: place block on the ground in front of the player
+            const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion).normalize();
+            const placePos = this.position.clone().add(forward.multiplyScalar(2));
+            placePos.y = Math.round(CONSTANTS.GROUND_LEVEL + 1);
+            const x = Math.round(placePos.x);
+            const y = Math.round(placePos.y);
+            const z = Math.round(placePos.z);
+            world.addBlock(x, y, z, this.selectedBlockType);
+            this.showNotification(`Placed ${this.selectedBlockType} block!`);
         }
     }
 
