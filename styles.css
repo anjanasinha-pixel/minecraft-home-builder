@@ -590,6 +590,7 @@ canvas {
     touch-action: none;
 }
 
+.mobile .controls-info,
 @media (max-width: 900px), (pointer: coarse) {
     .controls-info {
         display: none;

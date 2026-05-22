@@ -26,6 +26,10 @@ class GameUI {
         this.vocabList = this.getVocabularyList();
         this.vocabQueue = this.shuffleVocabulary(this.vocabList);
 
+        if (this.isMobileDevice()) {
+            document.body.classList.add('mobile');
+        }
+
         this.setupMenuButtons();
         this.setupBlockSelector();
         this.setupMobileTutorialOverlay();
