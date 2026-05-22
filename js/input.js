@@ -68,108 +68,78 @@ class InputManager {
 
     setupTouchControls() {
         const canvas = document.getElementById('gameCanvas');
-        if (canvas) {
-            this.activeTouches = new Map();
+        if (!canvas) return;
 
-            const setMovementKeys = (moveX, moveY) => {
-                const threshold = 12;
-                this.keys['KeyW'] = moveY < -threshold;
-                this.keys['KeyS'] = moveY > threshold;
-                this.keys['KeyA'] = moveX < -threshold;
-                this.keys['KeyD'] = moveX > threshold;
-            };
+        // Tap / Double-tap only controls for mobile
+        this._lastTapTime = 0;
+        this._lastTapX = 0;
+        this._lastTapY = 0;
+        this._tapTimeout = null;
 
-            const resetMovementKeys = () => {
-                this.keys['KeyW'] = false;
-                this.keys['KeyS'] = false;
-                this.keys['KeyA'] = false;
-                this.keys['KeyD'] = false;
-            };
+        // Single tap = place block (center) or toggle movement/look zones
+        // Double tap = remove block
+        canvas.addEventListener('touchend', (e) => {
+            if (!this.isGameActive) return;
+            const touch = e.changedTouches[0];
+            const now = performance.now();
+            const x = touch.clientX;
+            const y = touch.clientY;
+            const w = canvas.clientWidth;
+            const h = canvas.clientHeight;
 
-            const releaseTouch = (touch) => {
-                const touchData = this.activeTouches.get(touch.identifier);
-                if (!touchData) return;
+            const sinceLast = now - (this._lastTapTime || 0);
+            const dist = Math.hypot(x - (this._lastTapX || 0), y - (this._lastTapY || 0));
 
-                if (touchData.type === 'look') {
-                    const distance = Math.hypot(touch.clientX - touchData.startX, touch.clientY - touchData.startY);
-                    const duration = performance.now() - touchData.startTime;
-                    if (!touchData.moved && duration < 350 && distance < 12) {
-                        window.dispatchEvent(new CustomEvent('placeBlock'));
+            // Double-tap detection
+            if (sinceLast < 300 && dist < 40) {
+                clearTimeout(this._tapTimeout);
+                this._lastTapTime = 0;
+                window.dispatchEvent(new CustomEvent('removeBlock'));
+                return;
+            }
+
+            // Schedule single tap action (allow brief window for double-tap)
+            this._lastTapTime = now;
+            this._lastTapX = x; this._lastTapY = y;
+
+            this._tapTimeout = setTimeout(() => {
+                // Center tap places block
+                const cxMin = w * 0.3, cxMax = w * 0.7;
+                const cyMin = h * 0.3, cyMax = h * 0.7;
+                if (x >= cxMin && x <= cxMax && y >= cyMin && y <= cyMax) {
+                    window.dispatchEvent(new CustomEvent('placeBlock'));
+                    return;
+                }
+
+                // Left half: tap quadrants to toggle movement (tap to start/stop)
+                if (x < w * 0.5) {
+                    if (y < h * 0.33) {
+                        this.keys['KeyW'] = !this.keys['KeyW'];
+                    } else if (y > h * 0.66) {
+                        this.keys['KeyS'] = !this.keys['KeyS'];
+                    } else if (x < w * 0.25) {
+                        this.keys['KeyA'] = !this.keys['KeyA'];
+                    } else {
+                        this.keys['KeyD'] = !this.keys['KeyD'];
                     }
                 } else {
-                    resetMovementKeys();
-                }
-
-                this.activeTouches.delete(touch.identifier);
-            };
-
-            canvas.addEventListener('touchstart', (e) => {
-                if (!this.isGameActive) return;
-                for (const touch of Array.from(e.changedTouches)) {
-                    this.activeTouches.set(touch.identifier, {
-                        id: touch.identifier,
-                        startX: touch.clientX,
-                        startY: touch.clientY,
-                        lastX: touch.clientX,
-                        lastY: touch.clientY,
-                        startTime: performance.now(),
-                        type: touch.clientX <= canvas.clientWidth * 0.5 ? 'move' : 'look',
-                        moved: false
-                    });
-                }
-                e.preventDefault();
-            }, { passive: false });
-
-            canvas.addEventListener('touchmove', (e) => {
-                if (!this.isGameActive || !this.camera) return;
-                for (const touch of Array.from(e.changedTouches)) {
-                    const touchData = this.activeTouches.get(touch.identifier);
-                    if (!touchData) continue;
-
-                    const deltaX = touch.clientX - touchData.lastX;
-                    const deltaY = touch.clientY - touchData.lastY;
-                    const distance = Math.hypot(touch.clientX - touchData.startX, touch.clientY - touchData.startY);
-                    if (distance > 8) {
-                        touchData.moved = true;
-                    }
-
-                    if (touchData.type === 'look') {
-                        this.camera.rotateYaw(-deltaX * 0.01);
-                        this.camera.rotatePitch(-deltaY * 0.0075);
+                    // Right half: quick look controls by quadrant taps
+                    if (y < h * 0.33) {
+                        this.camera.rotatePitch(-0.12);
+                    } else if (y > h * 0.66) {
+                        this.camera.rotatePitch(0.12);
                     } else {
-                        const moveX = touch.clientX - touchData.startX;
-                        const moveY = touch.clientY - touchData.startY;
-                        setMovementKeys(moveX, moveY);
+                        if (x > w * 0.75) this.camera.rotateYaw(-0.28);
+                        else this.camera.rotateYaw(0.28);
                     }
-
-                    touchData.lastX = touch.clientX;
-                    touchData.lastY = touch.clientY;
-                    this.activeTouches.set(touch.identifier, touchData);
                 }
-                e.preventDefault();
-            }, { passive: false });
+            }, 260);
+        }, { passive: false });
 
-            canvas.addEventListener('touchend', (e) => {
-                if (!this.isGameActive) return;
-                for (const touch of Array.from(e.changedTouches)) {
-                    releaseTouch(touch);
-                }
-                e.preventDefault();
-            }, { passive: false });
-
-            canvas.addEventListener('touchcancel', (e) => {
-                for (const touch of Array.from(e.changedTouches)) {
-                    releaseTouch(touch);
-                }
-                e.preventDefault();
-            }, { passive: false });
-
-            window.addEventListener('touchmove', (e) => {
-                if (this.isGameActive) {
-                    e.preventDefault();
-                }
-            }, { passive: false });
-        }
+        // Prevent page scrolling while interacting on mobile
+        window.addEventListener('touchmove', (e) => {
+            if (this.isGameActive) e.preventDefault();
+        }, { passive: false });
 
         const buttons = document.querySelectorAll('.mobile-btn');
         buttons.forEach((button) => {
