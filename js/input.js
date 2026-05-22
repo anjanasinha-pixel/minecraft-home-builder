@@ -71,7 +71,7 @@ class InputManager {
         if (canvas) {
             canvas.addEventListener('touchstart', (e) => {
                 if (!this.isGameActive) return;
-                const touch = e.touches[0];
+                const touch = e.changedTouches[0];
                 this.touchDrag = true;
                 this.touchMoved = false;
                 this.lastTouchX = touch.clientX;
@@ -79,20 +79,23 @@ class InputManager {
                 this.touchStartX = touch.clientX;
                 this.touchStartY = touch.clientY;
                 this.touchStartTime = performance.now();
+                this.touchControlType = touch.clientX > canvas.clientWidth * 0.4 ? 'look' : 'tap';
                 e.preventDefault();
             }, { passive: false });
 
             canvas.addEventListener('touchmove', (e) => {
                 if (!this.isGameActive || !this.touchDrag || !this.camera) return;
-                const touch = e.touches[0];
+                const touch = e.changedTouches[0];
                 const deltaX = touch.clientX - this.lastTouchX;
                 const deltaY = touch.clientY - this.lastTouchY;
                 const moveDistance = Math.hypot(touch.clientX - this.touchStartX, touch.clientY - this.touchStartY);
-                if (moveDistance > 10) {
+                if (moveDistance > 8) {
                     this.touchMoved = true;
                 }
-                this.camera.rotateYaw(-deltaX * 0.003);
-                this.camera.rotatePitch(-deltaY * 0.003);
+                if (this.touchControlType === 'look') {
+                    this.camera.rotateYaw(-deltaX * 0.004);
+                    this.camera.rotatePitch(-deltaY * 0.004);
+                }
                 this.lastTouchX = touch.clientX;
                 this.lastTouchY = touch.clientY;
                 e.preventDefault();
@@ -100,12 +103,24 @@ class InputManager {
 
             canvas.addEventListener('touchend', (e) => {
                 if (!this.isGameActive) return;
+                const touch = e.changedTouches[0];
                 const touchDuration = performance.now() - this.touchStartTime;
-                if (!this.touchMoved && touchDuration < 300) {
+                const endDistance = Math.hypot(touch.clientX - this.touchStartX, touch.clientY - this.touchStartY);
+                if (!this.touchMoved && touchDuration < 400 && endDistance < 12) {
                     window.dispatchEvent(new CustomEvent('placeBlock'));
                 }
                 this.touchDrag = false;
                 e.preventDefault();
+            }, { passive: false });
+
+            canvas.addEventListener('touchcancel', () => {
+                this.touchDrag = false;
+            }, { passive: false });
+
+            window.addEventListener('touchmove', (e) => {
+                if (this.isGameActive) {
+                    e.preventDefault();
+                }
             }, { passive: false });
         }
 
@@ -152,7 +167,7 @@ class InputManager {
             button.addEventListener('touchstart', handleActionStart, { passive: false });
             button.addEventListener('mousedown', handleActionStart);
 
-            button.addEventListener('touchend', () => {
+            const resetMovementKey = () => {
                 switch (action) {
                     case 'move-forward':
                         this.keys['KeyW'] = false;
@@ -167,7 +182,20 @@ class InputManager {
                         this.keys['KeyD'] = false;
                         break;
                 }
-            });
+            };
+
+            button.addEventListener('touchend', (e) => {
+                resetMovementKey();
+                e.preventDefault();
+            }, { passive: false });
+
+            button.addEventListener('touchcancel', (e) => {
+                resetMovementKey();
+                e.preventDefault();
+            }, { passive: false });
+
+            button.addEventListener('mouseup', resetMovementKey);
+            button.addEventListener('mouseleave', resetMovementKey);
         });
     }
 
