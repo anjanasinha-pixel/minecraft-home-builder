@@ -17,6 +17,8 @@ class GameUI {
         this.vocabWordElem = document.getElementById('vocab-word');
         this.vocabMeaningElem = document.getElementById('vocab-meaning');
         this.vocabUsageElem = document.getElementById('vocab-usage');
+        this.mobileTutorialOverlay = document.getElementById('mobile-tutorial-overlay');
+        this.mobileTutorialOkBtn = document.getElementById('mobile-tutorial-ok-btn');
 
         this.currentUser = localStorage.getItem('gameUserName') || 'Guest';
         this.currentLocation = localStorage.getItem('gameUserLocation') || 'Unknown';
@@ -26,6 +28,7 @@ class GameUI {
 
         this.setupMenuButtons();
         this.setupBlockSelector();
+        this.setupMobileTutorialOverlay();
         this.setupUsageLogging();
         this.renderSettings();
 
@@ -362,6 +365,16 @@ class GameUI {
         });
     }
 
+    setupMobileTutorialOverlay() {
+        if (this.mobileTutorialOkBtn) {
+            this.mobileTutorialOkBtn.addEventListener('click', () => {
+                this.setMobileTutorialSeen(true);
+                this.hideMobileTutorialOverlay();
+                window.dispatchEvent(new Event('startGame'));
+            });
+        }
+    }
+
     setupBlockSelector() {
         const blockButtons = document.querySelectorAll('.block-btn');
         const mobileBlockButtons = document.querySelectorAll('.mobile-block-btn');
@@ -429,6 +442,7 @@ class GameUI {
         this.pauseMenu.classList.remove('active');
         this.tutorialMenu.classList.remove('active');
         this.settingsMenu.classList.remove('active');
+        this.hideMobileTutorialOverlay();
     }
 
     hideMenu() {
@@ -469,7 +483,36 @@ class GameUI {
     startGame() {
         this.hideMenu();
         this.hideLoadingScreen();
-        window.dispatchEvent(new Event('startGame'));
+
+        if (this.isMobileDevice() && !this.getMobileTutorialSeen()) {
+            this.showMobileTutorialOverlay();
+        } else {
+            window.dispatchEvent(new Event('startGame'));
+        }
+    }
+
+    isMobileDevice() {
+        return navigator.maxTouchPoints > 0 || /Mobi|Android|iPhone|iPad|iPod|Windows Phone/.test(navigator.userAgent) || window.matchMedia('(pointer: coarse)').matches;
+    }
+
+    getMobileTutorialSeen() {
+        return localStorage.getItem('mobileTutorialSeen') === 'true';
+    }
+
+    setMobileTutorialSeen(value) {
+        localStorage.setItem('mobileTutorialSeen', value ? 'true' : 'false');
+    }
+
+    showMobileTutorialOverlay() {
+        if (this.mobileTutorialOverlay) {
+            this.mobileTutorialOverlay.hidden = false;
+        }
+    }
+
+    hideMobileTutorialOverlay() {
+        if (this.mobileTutorialOverlay) {
+            this.mobileTutorialOverlay.hidden = true;
+        }
     }
 
     showNotification(message, duration = 3000) {

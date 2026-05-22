@@ -469,6 +469,59 @@ canvas {
     pointer-events: auto;
 }
 
+.mobile-tutorial-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    background: rgba(0, 0, 0, 0.82);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    transition: opacity 0.25s ease;
+}
+
+.mobile-tutorial-overlay[hidden] {
+    display: none;
+}
+
+.mobile-tutorial-card {
+    max-width: 440px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 22px;
+    padding: 22px;
+    color: white;
+    text-align: left;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(14px);
+}
+
+.mobile-tutorial-card h2 {
+    margin-bottom: 14px;
+    font-size: 26px;
+}
+
+.mobile-tutorial-card p {
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+.mobile-tutorial-card ul {
+    margin: 0 0 20px;
+    padding-left: 20px;
+    line-height: 1.7;
+}
+
+.mobile-tutorial-card li {
+    margin-bottom: 10px;
+}
+
+.mobile-tutorial-card .menu-btn {
+    width: 100%;
+}
+
 .mobile-dpad,
 .mobile-actions {
     display: grid;
