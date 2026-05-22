@@ -483,6 +483,34 @@ canvas {
     margin-top: 10px;
 }
 
+.mobile-block-picker {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    margin-top: 12px;
+    width: 100%;
+}
+
+.mobile-block-btn {
+    width: 100%;
+    min-height: 50px;
+    border-radius: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background: rgba(30, 136, 229, 0.85);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.mobile-block-btn.active {
+    background: rgba(255, 193, 7, 0.95);
+    color: #111;
+    border-color: #fff;
+}
+
 .mobile-dpad {
     grid-template-columns: repeat(2, 60px);
     grid-template-rows: repeat(2, 60px);

@@ -69,52 +69,99 @@ class InputManager {
     setupTouchControls() {
         const canvas = document.getElementById('gameCanvas');
         if (canvas) {
+            this.activeTouches = new Map();
+
+            const setMovementKeys = (moveX, moveY) => {
+                const threshold = 20;
+                this.keys['KeyW'] = moveY < -threshold;
+                this.keys['KeyS'] = moveY > threshold;
+                this.keys['KeyA'] = moveX < -threshold;
+                this.keys['KeyD'] = moveX > threshold;
+            };
+
+            const resetMovementKeys = () => {
+                this.keys['KeyW'] = false;
+                this.keys['KeyS'] = false;
+                this.keys['KeyA'] = false;
+                this.keys['KeyD'] = false;
+            };
+
+            const releaseTouch = (touch) => {
+                const touchData = this.activeTouches.get(touch.identifier);
+                if (!touchData) return;
+
+                if (touchData.type === 'look') {
+                    const distance = Math.hypot(touch.clientX - touchData.startX, touch.clientY - touchData.startY);
+                    const duration = performance.now() - touchData.startTime;
+                    if (!touchData.moved && duration < 350 && distance < 12) {
+                        window.dispatchEvent(new CustomEvent('placeBlock'));
+                    }
+                } else {
+                    resetMovementKeys();
+                }
+
+                this.activeTouches.delete(touch.identifier);
+            };
+
             canvas.addEventListener('touchstart', (e) => {
                 if (!this.isGameActive) return;
-                const touch = e.changedTouches[0];
-                this.touchDrag = true;
-                this.touchMoved = false;
-                this.lastTouchX = touch.clientX;
-                this.lastTouchY = touch.clientY;
-                this.touchStartX = touch.clientX;
-                this.touchStartY = touch.clientY;
-                this.touchStartTime = performance.now();
-                this.touchControlType = touch.clientX > canvas.clientWidth * 0.4 ? 'look' : 'tap';
+                for (const touch of Array.from(e.changedTouches)) {
+                    this.activeTouches.set(touch.identifier, {
+                        id: touch.identifier,
+                        startX: touch.clientX,
+                        startY: touch.clientY,
+                        lastX: touch.clientX,
+                        lastY: touch.clientY,
+                        startTime: performance.now(),
+                        type: touch.clientX <= canvas.clientWidth * 0.4 ? 'move' : 'look',
+                        moved: false
+                    });
+                }
                 e.preventDefault();
             }, { passive: false });
 
             canvas.addEventListener('touchmove', (e) => {
-                if (!this.isGameActive || !this.touchDrag || !this.camera) return;
-                const touch = e.changedTouches[0];
-                const deltaX = touch.clientX - this.lastTouchX;
-                const deltaY = touch.clientY - this.lastTouchY;
-                const moveDistance = Math.hypot(touch.clientX - this.touchStartX, touch.clientY - this.touchStartY);
-                if (moveDistance > 8) {
-                    this.touchMoved = true;
+                if (!this.isGameActive || !this.camera) return;
+                for (const touch of Array.from(e.changedTouches)) {
+                    const touchData = this.activeTouches.get(touch.identifier);
+                    if (!touchData) continue;
+
+                    const deltaX = touch.clientX - touchData.lastX;
+                    const deltaY = touch.clientY - touchData.lastY;
+                    const distance = Math.hypot(touch.clientX - touchData.startX, touch.clientY - touchData.startY);
+                    if (distance > 8) {
+                        touchData.moved = true;
+                    }
+
+                    if (touchData.type === 'look') {
+                        this.camera.rotateYaw(-deltaX * 0.004);
+                        this.camera.rotatePitch(-deltaY * 0.004);
+                    } else {
+                        const moveX = touch.clientX - touchData.startX;
+                        const moveY = touch.clientY - touchData.startY;
+                        setMovementKeys(moveX, moveY);
+                    }
+
+                    touchData.lastX = touch.clientX;
+                    touchData.lastY = touch.clientY;
+                    this.activeTouches.set(touch.identifier, touchData);
                 }
-                if (this.touchControlType === 'look') {
-                    this.camera.rotateYaw(-deltaX * 0.004);
-                    this.camera.rotatePitch(-deltaY * 0.004);
-                }
-                this.lastTouchX = touch.clientX;
-                this.lastTouchY = touch.clientY;
                 e.preventDefault();
             }, { passive: false });
 
             canvas.addEventListener('touchend', (e) => {
                 if (!this.isGameActive) return;
-                const touch = e.changedTouches[0];
-                const touchDuration = performance.now() - this.touchStartTime;
-                const endDistance = Math.hypot(touch.clientX - this.touchStartX, touch.clientY - this.touchStartY);
-                if (!this.touchMoved && touchDuration < 400 && endDistance < 12) {
-                    window.dispatchEvent(new CustomEvent('placeBlock'));
+                for (const touch of Array.from(e.changedTouches)) {
+                    releaseTouch(touch);
                 }
-                this.touchDrag = false;
                 e.preventDefault();
             }, { passive: false });
 
-            canvas.addEventListener('touchcancel', () => {
-                this.touchDrag = false;
+            canvas.addEventListener('touchcancel', (e) => {
+                for (const touch of Array.from(e.changedTouches)) {
+                    releaseTouch(touch);
+                }
+                e.preventDefault();
             }, { passive: false });
 
             window.addEventListener('touchmove', (e) => {

@@ -364,18 +364,29 @@ class GameUI {
 
     setupBlockSelector() {
         const blockButtons = document.querySelectorAll('.block-btn');
-        blockButtons.forEach(btn => {
-            const selectBlock = (e) => {
-                e.preventDefault();
-                blockButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const blockType = btn.getAttribute('data-block');
-                window.dispatchEvent(new CustomEvent('selectBlock', { detail: { type: blockType } }));
-                this.showNotification(`Selected ${blockType}!`);
-            };
+        const mobileBlockButtons = document.querySelectorAll('.mobile-block-btn');
 
-            btn.addEventListener('click', selectBlock);
-            btn.addEventListener('touchstart', selectBlock, { passive: false });
+        const updateActiveBlockButtons = (blockType) => {
+            blockButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-block') === blockType));
+            mobileBlockButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-block') === blockType));
+        };
+
+        const selectBlock = (btn, e) => {
+            if (e) e.preventDefault();
+            const blockType = btn.getAttribute('data-block');
+            updateActiveBlockButtons(blockType);
+            window.dispatchEvent(new CustomEvent('selectBlock', { detail: { type: blockType } }));
+            this.showNotification(`Selected ${blockType}!`);
+        };
+
+        blockButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => selectBlock(btn, e));
+            btn.addEventListener('touchstart', (e) => selectBlock(btn, e), { passive: false });
+        });
+
+        mobileBlockButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => selectBlock(btn, e));
+            btn.addEventListener('touchstart', (e) => selectBlock(btn, e), { passive: false });
         });
 
         // Keyboard shortcuts for blocks
