@@ -453,15 +453,15 @@ canvas {
 #mobile-controls {
     display: none;
     position: fixed;
-    bottom: 20px;
+    bottom: 12px;
     left: 0;
     right: 0;
     z-index: 150;
     pointer-events: none;
     justify-content: space-between;
     align-items: flex-end;
-    padding: 0 20px;
-    gap: 15px;
+    padding: 0 12px;
+    gap: 10px;
 }
 
 #mobile-controls.active {
@@ -532,10 +532,7 @@ canvas {
 .mobile-actions.secondary {
     display: grid;
     gap: 10px;
-    grid-template-columns: repeat(3, 90px);
-    margin-top: 10px;
-}
-
+        grid-template-columns: repeat(3, minmax(0, 1fr));
 .mobile-block-picker {
     display: grid;
     gap: 10px;

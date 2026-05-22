@@ -72,7 +72,7 @@ class InputManager {
             this.activeTouches = new Map();
 
             const setMovementKeys = (moveX, moveY) => {
-                const threshold = 20;
+                const threshold = 12;
                 this.keys['KeyW'] = moveY < -threshold;
                 this.keys['KeyS'] = moveY > threshold;
                 this.keys['KeyA'] = moveX < -threshold;
@@ -113,7 +113,7 @@ class InputManager {
                         lastX: touch.clientX,
                         lastY: touch.clientY,
                         startTime: performance.now(),
-                        type: touch.clientX <= canvas.clientWidth * 0.4 ? 'move' : 'look',
+                        type: touch.clientX <= canvas.clientWidth * 0.5 ? 'move' : 'look',
                         moved: false
                     });
                 }
@@ -134,8 +134,8 @@ class InputManager {
                     }
 
                     if (touchData.type === 'look') {
-                        this.camera.rotateYaw(-deltaX * 0.004);
-                        this.camera.rotatePitch(-deltaY * 0.004);
+                        this.camera.rotateYaw(-deltaX * 0.008);
+                        this.camera.rotatePitch(-deltaY * 0.006);
                     } else {
                         const moveX = touch.clientX - touchData.startX;
                         const moveY = touch.clientY - touchData.startY;
