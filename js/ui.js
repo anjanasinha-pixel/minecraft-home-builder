@@ -393,6 +393,7 @@ class GameUI {
             const blockType = btn.getAttribute('data-block');
             updateActiveBlockButtons(blockType);
             window.dispatchEvent(new CustomEvent('selectBlock', { detail: { type: blockType } }));
+            this.updateMobileSelectedBlockLabel(blockType);
             this.showNotification(`Selected ${blockType}!`);
         };
 
@@ -434,7 +435,23 @@ class GameUI {
         window.addEventListener('selectBlock', (e) => {
             const selectedType = e.detail.type;
             blockButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-block') === selectedType));
+            mobileBlockButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-block') === selectedType));
+            this.updateMobileSelectedBlockLabel(selectedType);
         });
+    }
+
+    updateMobileSelectedBlockLabel(blockType) {
+        const label = document.getElementById('mobile-selected-block-label');
+        const labelMini = document.getElementById('mobile-selected-block-label-mini');
+        if (label) label.textContent = blockType.charAt(0).toUpperCase() + blockType.slice(1);
+        if (labelMini) labelMini.textContent = blockType.charAt(0).toUpperCase() + blockType.slice(1);
+    }
+
+    updateMobilePlayerLabel(playerName) {
+        const label = document.getElementById('mobile-player-label');
+        const labelMini = document.getElementById('mobile-player-label-mini');
+        if (label) label.textContent = playerName;
+        if (labelMini) labelMini.textContent = playerName;
     }
 
     hideLoadingScreen() {

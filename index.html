@@ -15,13 +15,13 @@
     <div id="mobile-tutorial-overlay" class="mobile-tutorial-overlay" hidden>
         <div class="mobile-tutorial-card">
             <h2>Mobile Controls</h2>
-            <p>Touch controls are simplified for phone play. Use taps and double-taps:</p>
+            <p>Play like a builder hero! Use taps and friendly buttons to make your world.</p>
             <ul>
-                <li><strong>Single tap (center)</strong> — Place the currently selected block.</li>
-                <li><strong>Double tap</strong> — Remove the targeted block.</li>
-                <li><strong>Tap left area</strong> — Tap quadrants to toggle movement: top=forward, bottom=back, left=strafe left, right=strafe right.</li>
-                <li><strong>Tap right area</strong> — Quick look: top=look up, bottom=look down, sides=turn left/right.</li>
-                <li>Use the on-screen block picker and action buttons for quick selects.</li>
+                <li><strong>Single tap (center)</strong> — Place your block right where you want it.</li>
+                <li><strong>Double tap</strong> — Smash a block away.</li>
+                <li><strong>Use the big buttons</strong> — Build, Smash, Hop, and Switch players.</li>
+                <li><strong>Pick blocks</strong> from the colorful row at the bottom.</li>
+                <li>Friendly helper labels show what each tap zone does.</li>
             </ul>
             <button class="menu-btn" id="mobile-tutorial-ok-btn">Got it!</button>
         </div>
@@ -29,7 +29,25 @@
 
     <canvas id="gameCanvas"></canvas>
 
+    <!-- Tap zone visuals (mobile) -->
+    <div id="tap-zones" class="tap-zones" aria-hidden="true">
+        <div class="tap-zone tap-center" id="tap-zone-center"><span>Place</span></div>
+        <div class="tap-zone tap-left" id="tap-zone-left"><span>Move</span></div>
+        <div class="tap-zone tap-right" id="tap-zone-right"><span>Look</span></div>
+        <div class="tap-zone tap-top" id="tap-zone-top"><span>Up</span></div>
+        <div class="tap-zone tap-bottom" id="tap-zone-bottom"><span>Down</span></div>
+    </div>
     <div id="hud" class="hud">
+        <div id="movement-hud" class="movement-hud" aria-hidden="false">
+            <div class="movement-toggle" data-key="KeyW" id="mh-forward">▲</div>
+            <div class="movement-toggle" data-key="KeyA" id="mh-left">◄</div>
+            <div class="movement-toggle" data-key="KeyS" id="mh-back">▼</div>
+            <div class="movement-toggle" data-key="KeyD" id="mh-right">►</div>
+        </div>
+        <div class="mobile-status-panel">
+            <div class="status-item">👤 <span id="mobile-player-label">Reyansh</span></div>
+            <div class="status-item">🧱 <span id="mobile-selected-block-label">Dirt</span></div>
+        </div>
         <div class="player-info">
             <div class="player" id="player1-info">
                 <div class="player-avatar" id="player1-avatar" style="background-color: #87CEEB;"></div>
@@ -83,21 +101,27 @@
     </div>
 
     <div id="mobile-controls" class="mobile-controls">
-        <div class="mobile-dpad">
-            <button type="button" class="mobile-btn" data-action="move-forward">▲</button>
-            <button type="button" class="mobile-btn" data-action="move-left">◄</button>
-            <button type="button" class="mobile-btn" data-action="move-right">►</button>
-            <button type="button" class="mobile-btn" data-action="move-backward">▼</button>
+        <div class="mobile-control-header">
+            <div class="mobile-control-title">Build Party</div>
+            <div class="mobile-control-subtitle">Tap center to place, double-tap to remove.</div>
         </div>
-        <div class="mobile-actions">
-            <button type="button" class="mobile-btn" data-action="place-block">Place</button>
-            <button type="button" class="mobile-btn" data-action="remove-block">Remove</button>
-            <button type="button" class="mobile-btn" data-action="jump">Jump</button>
+        <div class="mobile-status-panel mobile-mini-status">
+            <div class="status-item">👤 <span id="mobile-player-label-mini">Reyansh</span></div>
+            <div class="status-item">🧱 <span id="mobile-selected-block-label-mini">Dirt</span></div>
         </div>
-        <div class="mobile-actions secondary">
-            <button type="button" class="mobile-btn" data-action="prev-block">Prev</button>
-            <button type="button" class="mobile-btn" data-action="next-block">Next</button>
-            <button type="button" class="mobile-btn" data-action="switch-player">Switch</button>
+        <div class="mobile-grid">
+            <div class="mobile-dpad">
+                <button type="button" class="mobile-btn" data-action="move-forward">▲</button>
+                <button type="button" class="mobile-btn" data-action="move-left">◄</button>
+                <button type="button" class="mobile-btn" data-action="move-right">►</button>
+                <button type="button" class="mobile-btn" data-action="move-backward">▼</button>
+            </div>
+            <div class="mobile-action-panel">
+                <button type="button" class="mobile-btn action-button place" data-action="place-block">Build</button>
+                <button type="button" class="mobile-btn action-button remove" data-action="remove-block">Smash</button>
+                <button type="button" class="mobile-btn action-button" data-action="jump">Hop</button>
+                <button type="button" class="mobile-btn action-button switch" data-action="switch-player">Switch</button>
+            </div>
         </div>
         <div class="mobile-block-picker">
             <button type="button" class="mobile-block-btn active" data-block="dirt">🟤</button>

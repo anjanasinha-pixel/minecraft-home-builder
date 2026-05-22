@@ -190,6 +190,7 @@ class Game {
         this.currentPlayer = this.playerManager.getPlayer(newPlayerId);
         this.camera.player = this.currentPlayer;
         this.inputManager.player = this.currentPlayer;
+        this.ui.updateMobilePlayerLabel(this.currentPlayer.name);
         this.ui.showNotification(`Switched to ${this.currentPlayer.name}!`);
     }
 
