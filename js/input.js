@@ -134,8 +134,8 @@ class InputManager {
                     }
 
                     if (touchData.type === 'look') {
-                        this.camera.rotateYaw(-deltaX * 0.008);
-                        this.camera.rotatePitch(-deltaY * 0.006);
+                        this.camera.rotateYaw(-deltaX * 0.01);
+                        this.camera.rotatePitch(-deltaY * 0.0075);
                     } else {
                         const moveX = touch.clientX - touchData.startX;
                         const moveY = touch.clientY - touchData.startY;

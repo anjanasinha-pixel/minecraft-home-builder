@@ -457,16 +457,16 @@ canvas {
     left: 0;
     right: 0;
     z-index: 150;
-    pointer-events: none;
+    pointer-events: auto;
     justify-content: space-between;
     align-items: flex-end;
     padding: 0 12px;
     gap: 10px;
+    touch-action: none;
 }
 
 #mobile-controls.active {
     display: flex;
-    pointer-events: auto;
 }
 
 .mobile-tutorial-overlay {
@@ -574,10 +574,12 @@ canvas {
     font-size: 16px;
     font-weight: bold;
     color: white;
-    background: rgba(76, 175, 80, 0.85);
+    background: rgba(76, 175, 80, 0.95);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .mobile-btn:active {
