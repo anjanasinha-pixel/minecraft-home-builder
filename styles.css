@@ -815,7 +815,19 @@ canvas {
     touch-action: none;
 }
 
-.mobile .controls-info,
+body.mobile .controls-info {
+    display: none;
+}
+
+body.mobile #mobile-controls {
+    display: flex;
+}
+
+body.mobile .hud {
+    left: 10px;
+    right: 10px;
+}
+
 @media (max-width: 900px), (pointer: coarse) {
     .controls-info {
         display: none;
@@ -826,7 +838,7 @@ canvas {
         right: 10px;
     }
 
-    .mobile-controls {
+    #mobile-controls {
         display: flex;
     }
 }

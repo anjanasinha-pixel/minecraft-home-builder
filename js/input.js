@@ -15,6 +15,16 @@ class InputManager {
 
         this.setupKeyboardControls();
         this.setupTouchControls();
+
+        // Mobile HUD elements for feedback
+        this.movementHud = document.getElementById('movement-hud');
+        this.movementToggles = {
+            KeyW: document.getElementById('mh-forward'),
+            KeyA: document.getElementById('mh-left'),
+            KeyS: document.getElementById('mh-back'),
+            KeyD: document.getElementById('mh-right')
+        };
+        this.tapZonesEl = document.getElementById('tap-zones');
     }
 
     setupKeyboardControls() {
@@ -76,9 +86,83 @@ class InputManager {
         this._lastTapY = 0;
         this._tapTimeout = null;
 
-        // Single tap = place block (center) or toggle movement/look zones
-        // Double tap = remove block
-        canvas.addEventListener('touchend', (e) => {
+        const isTouchOnMobileUI = (target) => {
+            return target && target.closest && target.closest('.mobile-controls, .mobile-block-picker, .mobile-tutorial-overlay, .menu') !== null;
+        };
+
+        const handleTouchEnd = (e) => {
+            if (!this.isGameActive || !e.changedTouches || e.changedTouches.length === 0) return;
+            if (isTouchOnMobileUI(e.target)) return;
+
+            const touch = e.changedTouches[0];
+            const now = performance.now();
+            const x = touch.clientX;
+            const y = touch.clientY;
+            const w = canvas.clientWidth;
+            const h = canvas.clientHeight;
+
+            const sinceLast = now - (this._lastTapTime || 0);
+            const dist = Math.hypot(x - (this._lastTapX || 0), y - (this._lastTapY || 0));
+
+            // Double-tap detection
+            if (sinceLast < 300 && dist < 40) {
+                clearTimeout(this._tapTimeout);
+                this._lastTapTime = 0;
+                window.dispatchEvent(new CustomEvent('removeBlock'));
+                this._vibrate(50);
+                this._showTapIndicator(x, y, 'remove');
+                return;
+            }
+
+            // Schedule single tap action (allow brief window for double-tap)
+            this._lastTapTime = now;
+            this._lastTapX = x; this._lastTapY = y;
+
+            this._tapTimeout = setTimeout(() => {
+                // Center tap places block
+                const cxMin = w * 0.3, cxMax = w * 0.7;
+                const cyMin = h * 0.3, cyMax = h * 0.7;
+                if (x >= cxMin && x <= cxMax && y >= cyMin && y <= cyMax) {
+                    window.dispatchEvent(new CustomEvent('placeBlock'));
+                    this._vibrate([20]);
+                    this._showTapIndicator(x, y, 'place');
+                    return;
+                }
+
+                // Left half: tap quadrants to toggle movement (tap to start/stop)
+                if (x < w * 0.5) {
+                    if (y < h * 0.33) {
+                        this.keys['KeyW'] = !this.keys['KeyW'];
+                        this._vibrate(20);
+                    } else if (y > h * 0.66) {
+                        this.keys['KeyS'] = !this.keys['KeyS'];
+                        this._vibrate(20);
+                    } else if (x < w * 0.25) {
+                        this.keys['KeyA'] = !this.keys['KeyA'];
+                        this._vibrate(20);
+                    } else {
+                        this.keys['KeyD'] = !this.keys['KeyD'];
+                        this._vibrate(20);
+                    }
+                    this._updateMovementHud();
+                } else {
+                    if (y < h * 0.33) {
+                        this.camera.rotatePitch(-0.12);
+                        this._vibrate(10);
+                    } else if (y > h * 0.66) {
+                        this.camera.rotatePitch(0.12);
+                        this._vibrate(10);
+                    } else {
+                        if (x > w * 0.75) this.camera.rotateYaw(-0.28);
+                        else this.camera.rotateYaw(0.28);
+                        this._vibrate(10);
+                    }
+                }
+            }, 260);
+        };
+
+        canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+        window.addEventListener('touchend', handleTouchEnd, { passive: false });
             if (!this.isGameActive) return;
             const touch = e.changedTouches[0];
             const now = performance.now();
@@ -95,6 +179,8 @@ class InputManager {
                 clearTimeout(this._tapTimeout);
                 this._lastTapTime = 0;
                 window.dispatchEvent(new CustomEvent('removeBlock'));
+                this._vibrate(50);
+                this._showTapIndicator(x, y, 'remove');
                 return;
             }
 
@@ -108,6 +194,8 @@ class InputManager {
                 const cyMin = h * 0.3, cyMax = h * 0.7;
                 if (x >= cxMin && x <= cxMax && y >= cyMin && y <= cyMax) {
                     window.dispatchEvent(new CustomEvent('placeBlock'));
+                    this._vibrate([20]);
+                    this._showTapIndicator(x, y, 'place');
                     return;
                 }
 
@@ -115,22 +203,30 @@ class InputManager {
                 if (x < w * 0.5) {
                     if (y < h * 0.33) {
                         this.keys['KeyW'] = !this.keys['KeyW'];
+                        this._vibrate(20);
                     } else if (y > h * 0.66) {
                         this.keys['KeyS'] = !this.keys['KeyS'];
+                        this._vibrate(20);
                     } else if (x < w * 0.25) {
                         this.keys['KeyA'] = !this.keys['KeyA'];
+                        this._vibrate(20);
                     } else {
                         this.keys['KeyD'] = !this.keys['KeyD'];
+                        this._vibrate(20);
                     }
+                    this._updateMovementHud();
                 } else {
                     // Right half: quick look controls by quadrant taps
                     if (y < h * 0.33) {
                         this.camera.rotatePitch(-0.12);
+                        this._vibrate(10);
                     } else if (y > h * 0.66) {
                         this.camera.rotatePitch(0.12);
+                        this._vibrate(10);
                     } else {
                         if (x > w * 0.75) this.camera.rotateYaw(-0.28);
                         else this.camera.rotateYaw(0.28);
+                        this._vibrate(10);
                     }
                 }
             }, 260);
@@ -149,21 +245,32 @@ class InputManager {
                 switch (action) {
                     case 'move-forward':
                         this.keys['KeyW'] = true;
+                        this._updateMovementHud();
                         break;
                     case 'move-backward':
                         this.keys['KeyS'] = true;
+                        this._updateMovementHud();
                         break;
                     case 'move-left':
                         this.keys['KeyA'] = true;
+                        this._updateMovementHud();
                         break;
                     case 'move-right':
                         this.keys['KeyD'] = true;
+                        this._updateMovementHud();
                         break;
                     case 'place-block':
                         window.dispatchEvent(new CustomEvent('placeBlock'));
+                        this._vibrate([20]);
+                        // center indicator near middle of screen
+                        const rect = canvas.getBoundingClientRect();
+                        this._showTapIndicator(rect.left + rect.width/2, rect.top + rect.height/2, 'place');
                         break;
                     case 'remove-block':
                         window.dispatchEvent(new CustomEvent('removeBlock'));
+                        this._vibrate(50);
+                        const r2 = canvas.getBoundingClientRect();
+                        this._showTapIndicator(r2.left + r2.width/2, r2.top + r2.height/2, 'remove');
                         break;
                     case 'jump':
                         this.player.jump();
@@ -203,6 +310,7 @@ class InputManager {
 
             button.addEventListener('touchend', (e) => {
                 resetMovementKey();
+                this._updateMovementHud();
                 e.preventDefault();
             }, { passive: false });
 
@@ -264,5 +372,41 @@ class InputManager {
         const newIndex = (currentIndex + direction + blockOrder.length) % blockOrder.length;
         const newBlock = blockOrder[newIndex];
         window.dispatchEvent(new CustomEvent('selectBlock', { detail: { type: newBlock } }));
+    }
+
+    _vibrate(pattern) {
+        try {
+            if (navigator && navigator.vibrate) {
+                navigator.vibrate(pattern);
+            }
+        } catch (e) {
+            // ignore if unavailable
+        }
+    }
+
+    _updateMovementHud() {
+        if (!this.movementToggles) return;
+        Object.keys(this.movementToggles).forEach((key) => {
+            const el = this.movementToggles[key];
+            if (!el) return;
+            if (this.keys[key]) el.classList.add('active');
+            else el.classList.remove('active');
+        });
+    }
+
+    _showTapIndicator(clientX, clientY, type) {
+        const el = document.createElement('div');
+        el.className = 'tap-indicator';
+        if (type === 'remove') el.style.background = 'rgba(255,80,80,0.14)';
+        if (type === 'place') el.style.background = 'rgba(80,255,120,0.12)';
+        el.style.left = (clientX) + 'px';
+        el.style.top = (clientY) + 'px';
+        document.body.appendChild(el);
+        // force reflow then show
+        requestAnimationFrame(() => el.classList.add('show'));
+        setTimeout(() => {
+            el.classList.remove('show');
+            setTimeout(() => el.remove(), 260);
+        }, 420);
     }
 }
